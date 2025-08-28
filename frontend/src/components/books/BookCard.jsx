@@ -19,6 +19,14 @@ const BookCard = ({ book, onDelete, onEdit }) => {
     return "Auteur non chargé";
   };
 
+  // TEST : Extraire les information de l'editeur depuis editorInfo
+  const getEditorName = (editorInfo) => {
+    if (editorInfo && editorInfo.name) {
+      return `${editorInfo.name}`;
+    }
+    return "Editeur non chargé";
+  };
+
   const handleImageError = (e) => {
     e.target.src = PLACEHOLDER_IMG;
   };
@@ -41,6 +49,9 @@ const BookCard = ({ book, onDelete, onEdit }) => {
           <div className="book-info">
             <h3 className="book-title">{book.title}</h3>
             <p className="book-author">Par {getAuthorName(book.authorInfo)}</p>
+            <p className="book-author">
+              Editeur: {getEditorName(book.editorInfo)}
+            </p>
             {book.description && (
               <p className="book-description">
                 {book.description.length > 100
@@ -57,6 +68,7 @@ const BookCard = ({ book, onDelete, onEdit }) => {
           <div className="book-back-content">
             <h3 className="book-title">{book.title}</h3>
             <p className="book-author">{getAuthorName(book.authorInfo)}</p>
+            <p className="book-author">{getEditorName(book.editorInfo)}</p>
             {book.description && (
               <p className="book-description">{book.description}</p>
             )}

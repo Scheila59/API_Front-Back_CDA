@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { bookService, authorService } from "../../services/api";
+import { editorService } from "../../services/api";
 import BookCard from "./BookCard";
 import SearchBar from "../common/SearchBar";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -9,6 +10,7 @@ import "./BookList.css";
 const BookListAdvanced = ({ onEdit }) => {
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
+  const [editors, setEditors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,14 +41,16 @@ const BookListAdvanced = ({ onEdit }) => {
       setLoading(true);
       setError(null);
 
-      // Charger books et authors en parallèle
-      const [booksData, authorsData] = await Promise.all([
+      // Charger books et authors et les editeurs en parallèle
+      const [booksData, authorsData, editorsData] = await Promise.all([
         bookService.getAll(),
         authorService.getAll(),
+        editorService.getAll(),
       ]);
 
       setBooks(booksData);
       setAuthors(authorsData);
+      setEditors(editorsData);
     } catch (error) {
       setError("Erreur lors du chargement des données");
       console.error("Erreur:", error);
@@ -71,6 +75,10 @@ const BookListAdvanced = ({ onEdit }) => {
   const getAuthorInfo = (authorIri) => {
     const authorId = authorIri.split("/").pop();
     return authors.find((author) => String(author.id) === String(authorId));
+  };
+  const getEditorInfo = (editorIri) => {
+    const editorId = editorIri.split("/").pop();
+    return editors.find((editor) => String(editor.id) === String(editorId));
   };
   if (loading) {
     return (
@@ -118,10 +126,11 @@ const BookListAdvanced = ({ onEdit }) => {
         <div className="books-grid">
           {filteredBooks.map((book) => {
             const authorInfo = getAuthorInfo(book.author);
+            const editorInfo = getEditorInfo(book.editor);
             return (
               <BookCard
                 key={book.id}
-                book={{ ...book, authorInfo }}
+                book={{ ...book, authorInfo, editorInfo }}
                 onEdit={onEdit}
                 onDelete={handleDeleteBook}
               />

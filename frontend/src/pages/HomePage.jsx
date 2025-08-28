@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./HomePage.css";
-import { bookService, authorService } from "../services/api";
+import { bookService, authorService, editorService } from "../services/api";
 
 const HomePage = () => {
   // États pour stocker les nombres
   const [bookCount, setBookCount] = useState(null);
   const [authorCount, setAuthorCount] = useState(null);
+  const [editorCount, setEditorCount] = useState(null);
   const [statsError, setStatsError] = useState(null);
   useEffect(() => {
     const fetchStats = async () => {
       try {
         setStatsError(null);
-        const [books, authors] = await Promise.all([
+        const [books, authors, editors] = await Promise.all([
           bookService.getAll(),
           authorService.getAll(),
+          editorService.getAll(),
         ]);
         setBookCount(books.length);
         setAuthorCount(authors.length);
+        setEditorCount(editors.length);
       } catch (e) {
         setStatsError("Impossible de charger les statistiques");
       }
@@ -51,6 +54,14 @@ const HomePage = () => {
           </Link>
         </div>
         <div className="feature-card">
+          <div className="feature-icon">✍</div>
+          <h3>Gestion des Editeurs</h3>
+          <p>Découvrez et gérez les editeurs de votre bibliothèque</p>
+          <Link to="/editors" className="featurelink">
+            Voir les editeurs →
+          </Link>
+        </div>
+        <div className="feature-card">
           <div className="feature-icon">🔍</div>
           <h3>Recherche Avancée</h3>
           <p>Trouvez rapidement le livre que vous cherchez</p>
@@ -73,6 +84,12 @@ const HomePage = () => {
               {authorCount !== null ? authorCount : "..."}
             </div>
             <div className="stat-label">Auteurs référencés</div>
+          </div>
+          <div className="stat-card">
+            <div className="statnumber">
+              {editorCount !== null ? editorCount : "..."}
+            </div>
+            <div className="stat-label">Editeurs référencés</div>
           </div>
         </div>
         {statsError && (

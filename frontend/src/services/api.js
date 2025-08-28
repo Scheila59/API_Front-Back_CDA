@@ -60,6 +60,51 @@ export const authorService = {
     }
   },
 };
+// Service pour les editeurs
+export const editorService = {
+  getAll: async () => {
+    try {
+      const response = await apiClient.get("/editors");
+      return extractHydraMember(response.data);
+    } catch (error) {
+      throw new Error("Impossible de charger les editeurs");
+    }
+  },
+  getById: async (id) => {
+    try {
+      const response = await apiClient.get(`/editors/${id}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(`Editeur avec l'ID ${id} introuvable`);
+    }
+  },
+
+  create: async (editorData) => {
+    try {
+      const response = await apiClient.post("/editors", editorData);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erreur lors de la création de l'editeur");
+    }
+  },
+  update: async (id, editorData) => {
+    try {
+      const response = await apiClient.put(`/editors/${id}`, editorData);
+      return response.data;
+    } catch (error) {
+      throw new Error("Erreur lors de la mise à jour de l'editeur");
+    }
+  },
+
+  delete: async (id) => {
+    try {
+      await apiClient.delete(`/editors/${id}`);
+      return true;
+    } catch (error) {
+      throw new Error("Erreur lors de la suppression de l'editeur");
+    }
+  },
+};
 
 // Service pour les livres
 export const bookService = {
